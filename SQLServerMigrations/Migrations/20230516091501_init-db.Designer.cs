@@ -9,10 +9,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace DemoRepositoryPattern.Migrations
+namespace SQLServerMigrations.Migrations
 {
-    [DbContext(typeof(AppDbContextSqlServer))]
-    [Migration("20230514164518_init-db")]
+    [DbContext(typeof(AppDbContext))]
+    [Migration("20230516091501_init-db")]
     partial class initdb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

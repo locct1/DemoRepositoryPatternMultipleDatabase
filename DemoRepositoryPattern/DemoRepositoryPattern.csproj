@@ -7,10 +7,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Compile Remove="Models\**" />
-	  <Content Remove="Models\**" />
-	  <EmbeddedResource Remove="Models\**" />
-	  <None Remove="Models\**" />
+		<Compile Remove="Models\**" />
+		<Content Remove="Models\**" />
+		<EmbeddedResource Remove="Models\**" />
+		<None Remove="Models\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -31,6 +31,10 @@
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.8" />
 		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.2" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="LibraryDbProvider\DbContext\" />
 	</ItemGroup>
 
 </Project>
