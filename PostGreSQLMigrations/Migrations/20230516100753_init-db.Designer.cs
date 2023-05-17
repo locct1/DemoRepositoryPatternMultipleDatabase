@@ -3,17 +3,19 @@ using System;
 using DemoRepositoryPattern.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace DemoRepositoryPattern.Migrations.AppDbContextPostGreMigrations
+namespace PostGreSQLMigrations.Migrations
 {
-    [DbContext(typeof(AppDbContextPostGre))]
-    partial class AppDbContextPostGreModelSnapshot : ModelSnapshot
+    [DbContext(typeof(AppDbContext))]
+    [Migration("20230516100753_init-db")]
+    partial class initdb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -1,26 +1,43 @@
 ﻿using DemoRepositoryPattern.Data;
 using DemoRepositoryPattern.Interfaces;
-using DemoRepositoryPattern.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace DemoRepositoryPattern.UnitOfWorks
 {
-    public class UnitOfWork : IUnitOfWork
+    public class UnitOfWork<TEntity> : IUnitOfWork<TEntity>, IDisposable where TEntity : class
     {
-        private readonly DbContext _context;
+        private AppDbContext _context = new AppDbContext();
 
-        public UnitOfWork(DbContext context)
+        private IGenericRepository<TEntity> _repository;
+
+        public IGenericRepository<TEntity> Repository
         {
-            _context = context;
-
+            get
+            {
+                if (this._repository is null)
+                {
+                    this._repository = new GenericRepository<TEntity>(_context);
+                }
+                return this._repository;
+            }
         }
-        public int Save()
+        private bool disposed = false;
+        protected virtual void Dispose(bool disposing)
         {
-            return _context.SaveChanges();
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    _context.Dispose();
+                }
+            }
+            this.disposed = true;
         }
         public void Dispose()
         {
-            _context.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

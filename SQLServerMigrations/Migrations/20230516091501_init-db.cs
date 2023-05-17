@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace DemoRepositoryPattern.Migrations
+namespace SQLServerMigrations.Migrations
 {
     public partial class initdb : Migration
     {

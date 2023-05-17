@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace DemoRepositoryPattern.Migrations.AppDbContextMySqlMigrations
+namespace MySQLMigrations.Migrations
 {
     public partial class initdb : Migration
     {
