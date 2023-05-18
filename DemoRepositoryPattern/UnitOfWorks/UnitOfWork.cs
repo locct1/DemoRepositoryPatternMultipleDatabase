@@ -1,43 +1,83 @@
 ﻿using DemoRepositoryPattern.Data;
 using DemoRepositoryPattern.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
+using System.Transactions;
 
 namespace DemoRepositoryPattern.UnitOfWorks
 {
-    public class UnitOfWork<TEntity> : IUnitOfWork<TEntity>, IDisposable where TEntity : class
+    public class UnitOfWork<TContext> : IUnitOfWork<TContext>, IUnitOfWork where TContext : DbContext
     {
-        private AppDbContext _context = new AppDbContext();
-
-        private IGenericRepository<TEntity> _repository;
-
-        public IGenericRepository<TEntity> Repository
-        {
-            get
-            {
-                if (this._repository is null)
-                {
-                    this._repository = new GenericRepository<TEntity>(_context);
-                }
-                return this._repository;
-            }
-        }
+        private readonly TContext _context;
         private bool disposed = false;
-        protected virtual void Dispose(bool disposing)
+        private Dictionary<Type, object> repositories;
+        public TContext DbContext => _context;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UnitOfWork{TContext}"/> class.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        public UnitOfWork(TContext context)
         {
-            if (!this.disposed)
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
+        public IGenericRepository<TEntity> GetRepository<TEntity>(bool hasCustomRepository = false) where TEntity : class
+        {
+            if (repositories == null)
             {
-                if (disposing)
+                repositories = new Dictionary<Type, object>();
+            }
+
+            // what's the best way to support custom reposity?
+            if (hasCustomRepository)
+            {
+                var customRepo = _context.GetService<IGenericRepository<TEntity>>();
+                if (customRepo != null)
                 {
-                    _context.Dispose();
+                    return customRepo;
                 }
             }
-            this.disposed = true;
+
+            var type = typeof(TEntity);
+            if (!repositories.ContainsKey(type))
+            {
+                repositories[type] = new GenericRepository<TEntity>(_context);
+            }
+
+            return (IGenericRepository<TEntity>)repositories[type];
         }
+        public async Task<int> SaveChangesAsync()
+        {
+            return await _context.SaveChangesAsync();
+        }
+
+
         public void Dispose()
         {
             Dispose(true);
+
             GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (disposing)
+                {
+                    // clear repositories
+                    if (repositories != null)
+                    {
+                        repositories.Clear();
+                    }
+
+                    // dispose the db context.
+                    _context.Dispose();
+                }
+            }
+
+            disposed = true;
         }
     }
 }

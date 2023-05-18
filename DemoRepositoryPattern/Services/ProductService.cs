@@ -6,18 +6,30 @@ namespace DemoRepositoryPattern.Services
 {
     public class ProductService : IProductService
     {
-        private readonly IUnitOfWork<Product> _unitOfWork;
-        public ProductService()
+        private readonly IUnitOfWork _unitOfWork;
+        public ProductService(IUnitOfWork unitOfWork)
         {
-            _unitOfWork = new UnitOfWork<Product>();
+            _unitOfWork = unitOfWork;
         }
-        public async Task<IEnumerable<Product>> GetAll() => await _unitOfWork.Repository.GetAll();
-        public async Task<Product?> GetProductById(int id) => await _unitOfWork.Repository.GetByID(id);
-        public async Task CreateProduct(Product newProduct) => await _unitOfWork.Repository.Insert(newProduct);
-        public async Task UpdateProduct(int id, Product updateProduct) => await _unitOfWork.Repository.Update(updateProduct);
-        public async Task DeleteProduct(int id) => await _unitOfWork.Repository.Delete(id);
-        public async Task<IEnumerable<Product>> ValidateProduct(int id, string name) => await _unitOfWork.Repository.GetAll(x => x.Id != id && x.Name == name);
-        public async Task<IEnumerable<Product>> ListProductByCategoryId(int id) => await _unitOfWork.Repository.GetAll(x => x.CategoryId == id);
+        public async Task<IEnumerable<Product>> GetAll() => await _unitOfWork.GetRepository<Product>().GetAll();
+        public async Task<Product?> GetProductById(int id) => await _unitOfWork.GetRepository<Product>().GetByID(id);
+        public async Task CreateProduct(Product newProduct)
+        {
+            await _unitOfWork.GetRepository<Product>().Insert(newProduct);
+            await _unitOfWork.SaveChangesAsync();
+        }
+        public async Task UpdateProduct(int id, Product updateProduct)
+        {
+            await _unitOfWork.GetRepository<Product>().Update(updateProduct);
+            await _unitOfWork.SaveChangesAsync();
+        }
+        public async Task DeleteProduct(int id)
+        {
+            await _unitOfWork.GetRepository<Product>().Delete(id);
+            await _unitOfWork.SaveChangesAsync();
+        }
+        public async Task<IEnumerable<Product>> ValidateProduct(int id, string name) => await _unitOfWork.GetRepository<Product>().GetAll(x => x.Id != id && x.Name == name);
 
+        public async Task<IEnumerable<Product>> ListProductByCategoryId(int id) => await _unitOfWork.GetRepository<Product>().GetAll(x => x.CategoryId == id);
     }
 }

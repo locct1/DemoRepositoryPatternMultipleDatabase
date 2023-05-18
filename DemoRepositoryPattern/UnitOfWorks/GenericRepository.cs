@@ -39,13 +39,11 @@ namespace DemoRepositoryPattern.UnitOfWorks
         public async virtual Task Insert(TEntity entity)
         {
             _dbSet.Add(entity);
-            _context.SaveChanges();
         }
         public async virtual Task Delete(object id)
         {
             TEntity entityDelete = _dbSet.Find(id);
             Delete(entityDelete);
-            _context.SaveChanges();
 
         }
         public async virtual Task Delete(TEntity entityDelete)
@@ -55,14 +53,12 @@ namespace DemoRepositoryPattern.UnitOfWorks
                 _dbSet.Attach(entityDelete);
             }
             _dbSet.Remove(entityDelete);
-            _context.SaveChanges();
 
         }
         public async virtual Task Update(TEntity entityUpdate)
         {
             _dbSet.Attach(entityUpdate);
             _context.Entry(entityUpdate).State = EntityState.Modified;
-            _context.SaveChanges();
 
         }
     }

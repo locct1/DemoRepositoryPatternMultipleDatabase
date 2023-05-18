@@ -5,12 +5,11 @@ namespace DemoRepositoryPattern.Data
 {
     public class AppDbContext : DbContext
     {
-        private readonly string _connectionString;
+        //private readonly string _connectionString;
         private readonly CreateDatabase DBProvider = new CreateDatabase();
         public AppDbContext()
         {
-            _connectionString = DBProvider.GetDBProvider().ConnectionString();
-
+            //_connectionString = DBProvider.GetDBProvider().ConnectionString();
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

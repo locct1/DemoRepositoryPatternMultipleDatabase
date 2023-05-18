@@ -1,7 +1,9 @@
 ﻿namespace DemoRepositoryPattern.UnitOfWorks
 {
-    public interface IUnitOfWork<TEntity> where TEntity : class
+    public interface IUnitOfWork : IDisposable
     {
-        public IGenericRepository<TEntity> Repository { get; }
+        IGenericRepository<TEntity> GetRepository<TEntity>(bool hasCustomRepository = false) where TEntity : class;
+        Task<int> SaveChangesAsync();
+
     }
 }
